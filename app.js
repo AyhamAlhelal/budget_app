@@ -29,9 +29,7 @@ let BudgetController = (function () {
 
 // App Controller - Module Pattern
 let appController = (function (UICtrl, BudgetCntrl) {
-  let DOM = UICtrl.getDOM();
-
-  function valueController() {
+  let valueController = function () {
     // get the input value
     let inputs = UICtrl.getInputs();
     console.log(inputs);
@@ -40,15 +38,26 @@ let appController = (function (UICtrl, BudgetCntrl) {
     // add the input value to the UI
     // calculate the budget
     // add the total budget to the UI
-  }
+  };
 
-  document
-    .querySelector(DOM.inputBtn)
-    .addEventListener("click", valueController);
+  let addEventListeners = function () {
+    let DOM = UICtrl.getDOM();
+    document
+      .querySelector(DOM.inputBtn)
+      .addEventListener("click", valueController);
 
-  document.addEventListener("keypress", function (event) {
-    if (event.keyCode === 13 || event.which === 13) {
-      valueController();
-    }
-  });
+    document.addEventListener("keypress", function (event) {
+      if (event.keyCode === 13 || event.which === 13) {
+        valueController();
+      }
+    });
+  };
+
+  return {
+    init: function () {
+      addEventListeners();
+    },
+  };
 })(UIController, BudgetController);
+
+appController.init();
