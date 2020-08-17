@@ -54,6 +54,25 @@ let BudgetController = (function () {
       exp: 0,
     },
   };
+  return {
+    addInput: function (type, value, description) {
+      let newInput, id;
+      if (data.totalItems[type].length > 0) {
+        id = data.totalItems[type][data.totalItems[type].length - 1].id + 1;
+      } else {
+        id = 0;
+      }
+
+      if (type === "inc") {
+        newInput = new Income(id, value, description);
+      } else if (type === "exp") {
+        newInput = new Expense(id, value, description);
+      }
+      data.totalItems[type].push(newInput);
+      console.log(data.totalItems[type][id]);
+      return newInput;
+    },
+  };
 })();
 
 // App Controller - Module Pattern
@@ -63,7 +82,11 @@ let appController = (function (UICtrl, BudgetCntrl) {
     let inputs = UICtrl.getInputs();
 
     // add the input value to the budget controller
-
+    let addInput = BudgetCntrl.addInput(
+      inputs.inputType,
+      inputs.inputValue,
+      inputs.inputDescription
+    );
     // add the input value to the UI
     // calculate the budget
     // add the total budget to the UI
