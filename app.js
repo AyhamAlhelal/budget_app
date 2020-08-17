@@ -1,3 +1,5 @@
+"use strict";
+
 // UI Controller - Module Pattern
 let UIController = (function () {
   let DOM = {
@@ -10,9 +12,9 @@ let UIController = (function () {
   return {
     getInputs: function () {
       return {
+        inputType: document.querySelector(DOM.inputType).value,
         inputValue: document.querySelector(DOM.inputValue).value,
         inputDescription: document.querySelector(DOM.inputDescription).value,
-        inputType: document.querySelector(DOM.inputType).value,
       };
     },
 
@@ -25,6 +27,33 @@ let UIController = (function () {
 // Budget Controller - Module Pattern
 let BudgetController = (function () {
   // code
+
+  class Income {
+    constructor(id, value, description) {
+      this.id = id;
+      this.value = value;
+      this.description = description;
+    }
+  }
+
+  class Expense {
+    constructor(id, value, description) {
+      this.id = id;
+      this.value = value;
+      this.description = description;
+    }
+  }
+
+  let data = {
+    totalItems: {
+      inc: [],
+      exp: [],
+    },
+    totalBudget: {
+      inc: 0,
+      exp: 0,
+    },
+  };
 })();
 
 // App Controller - Module Pattern
@@ -32,9 +61,9 @@ let appController = (function (UICtrl, BudgetCntrl) {
   let valueController = function () {
     // get the input value
     let inputs = UICtrl.getInputs();
-    console.log(inputs);
 
     // add the input value to the budget controller
+
     // add the input value to the UI
     // calculate the budget
     // add the total budget to the UI
