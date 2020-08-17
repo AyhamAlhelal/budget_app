@@ -48,6 +48,18 @@ let UIController = (function () {
         .querySelector(parentItem)
         .insertAdjacentHTML("beforeend", newItem);
     },
+    clearFields: function () {
+      let fieldsList, fieldsAry;
+      fieldsList = document.querySelectorAll(
+        DOM.inputDescription + ", " + DOM.inputValue
+      );
+      fieldsAry = Array.prototype.slice.call(fieldsList);
+
+      fieldsAry.forEach((val) => {
+        val.value = "";
+      });
+      fieldsAry[0].focus();
+    },
   };
 })();
 
@@ -115,6 +127,9 @@ let appController = (function (UICtrl, BudgetCntrl) {
     );
     // add the input value to the UI
     UICtrl.addHTMLItems(inputs.inputType, addInput);
+
+    // clear the fields
+    UICtrl.clearFields();
     // calculate the budget
     // add the total budget to the UI
   };
