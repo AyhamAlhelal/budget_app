@@ -15,7 +15,7 @@ let UIController = (function () {
     getInputs: function () {
       return {
         inputType: document.querySelector(DOM.inputType).value,
-        inputValue: document.querySelector(DOM.inputValue).value,
+        inputValue: parseFloat(document.querySelector(DOM.inputValue).value),
         inputDescription: document.querySelector(DOM.inputDescription).value,
       };
     },
@@ -92,7 +92,33 @@ let BudgetController = (function () {
       inc: 0,
       exp: 0,
     },
+    budget: 0,
+    percentage: -1,
   };
+
+  let calcTotal = function (type) {
+    // calculate total income or expenses
+    data.totalBudget[type] = data.totalItems[type].reduce((sum, item) => {
+      return sum + item.value;
+    }, 0);
+  };
+
+  let calcBudget = function () {
+    // calculate the final budget
+    data.budget = data.totalBudget.inc - data.totalBudget.exp;
+  };
+
+  let calcPercentage = function () {
+    // calculate the percentage
+    if (data.budget > 0) {
+      data.percentage = Math.round(
+        (data.totalBudget.exp / data.totalBudget.inc) * 100
+      );
+    } else {
+      data.percentage = -1;
+    }
+  };
+
   return {
     addInput: function (type, value, description) {
       let newInput, id;
@@ -110,41 +136,75 @@ let BudgetController = (function () {
       data.totalItems[type].push(newInput);
       return newInput;
     },
+    calculateBudget: function () {
+      // calculate total income and expenses
+      calcTotal("inc");
+      calcTotal("exp");
+      // calculate the final budget
+      calcBudget();
+      // calculate the percentage
+      calcPercentage();
+    },
+    getData: function () {
+      return {
+        totalInc: data.totalBudget.inc,
+        totalExp: data.totalBudget.exp,
+        budget: data.budget,
+        percentage: data.percentage,
+      };
+    },
   };
 })();
 
 // App Controller - Module Pattern
 let appController = (function (UICtrl, BudgetCntrl) {
-  let valueController = function () {
+  let newInputController = function () {
     // get the input value
     let inputs = UICtrl.getInputs();
+    if (
+      inputs.inputDescription !== "" &&
+      inputs.inputValue !== Number.NaN &&
+      inputs.inputValue > 0
+    ) {
+      // add the input value to the budget controller
+      let addInput = BudgetCntrl.addInput(
+        inputs.inputType,
+        inputs.inputValue,
+        inputs.inputDescription
+      );
 
-    // add the input value to the budget controller
-    let addInput = BudgetCntrl.addInput(
-      inputs.inputType,
-      inputs.inputValue,
-      inputs.inputDescription
-    );
-    // add the input value to the UI
-    UICtrl.addHTMLItems(inputs.inputType, addInput);
+      // add the input value to the UI
+      UICtrl.addHTMLItems(inputs.inputType, addInput);
 
-    // clear the fields
-    UICtrl.clearFields();
-    // calculate the budget
-    // add the total budget to the UI
+      // clear the fields
+      UICtrl.clearFields();
+
+      // calculate the budget
+      updateBudget();
+
+      // add the total budget to the UI
+    }
   };
 
   let addEventListeners = function () {
     let DOM = UICtrl.getDOM();
     document
       .querySelector(DOM.inputBtn)
-      .addEventListener("click", valueController);
+      .addEventListener("click", newInputController);
 
     document.addEventListener("keypress", function (event) {
       if (event.keyCode === 13 || event.which === 13) {
-        valueController();
+        newInputController();
       }
     });
+  };
+
+  let updateBudget = function () {
+    // calculate the budget
+    BudgetCntrl.calculateBudget();
+    // get the budget data
+    let budget = BudgetCntrl.getData();
+    console.log(budget);
   };
 
   return {
