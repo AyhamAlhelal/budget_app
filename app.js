@@ -154,6 +154,16 @@ let BudgetController = (function () {
       data.totalItems[type].push(newInput);
       return newInput;
     },
+    deleteInput: function (type, id) {
+      let index;
+
+      index = data.totalItems[type].findIndex((value) => {
+        return value.id === id;
+      });
+      if (index !== -1) {
+        data.totalItems[type].splice(index, 1);
+      }
+    },
     calculateBudget: function () {
       // calculate total income and expenses
       calcTotal("inc");
@@ -211,10 +221,11 @@ let appController = (function (UICtrl, BudgetCntrl) {
     if (itemId) {
       splitedId = itemId.split("-");
       type = splitedId[0];
-      id = splitedId[1];
-    }
+      id = parseInt(splitedId[1]);
 
-    console.log(splitedId, type, id);
+      // delete item from tha data
+      BudgetCntrl.deleteInput(type, id);
+    }
   };
 
   let addEventListeners = function () {
