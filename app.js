@@ -14,6 +14,7 @@ let UIController = (function () {
     expensesValue: ".budget__expenses--value",
     percentageValue: ".budget__expenses--percentage",
     monthTitle: ".budget__title--month",
+    container: ".container",
   };
 
   return {
@@ -33,12 +34,12 @@ let UIController = (function () {
       let html, newItem, parentItem;
       if (type === "inc") {
         html =
-          '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">+ %value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">+ %value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 
         parentItem = DOM.incomeList;
       } else if (type === "exp") {
         html =
-          '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">- %value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">- %value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 
         parentItem = DOM.expensesList;
       }
@@ -175,7 +176,7 @@ let BudgetController = (function () {
 
 // App Controller - Module Pattern
 let appController = (function (UICtrl, BudgetCntrl) {
-  let newInputController = function () {
+  let addItem = function () {
     // get the input value
     let inputs = UICtrl.getInputs();
     if (
@@ -201,17 +202,32 @@ let appController = (function (UICtrl, BudgetCntrl) {
     }
   };
 
+  let deleteItem = function (event) {
+    let item, splitedId, itemId, type, id;
+
+    // get the target item and the id
+    item = event.target.parentNode.parentNode.parentNode.parentNode;
+    itemId = item.id;
+    if (itemId) {
+      splitedId = itemId.split("-");
+      type = splitedId[0];
+      id = splitedId[1];
+    }
+
+    console.log(splitedId, type, id);
+  };
+
   let addEventListeners = function () {
     let DOM = UICtrl.getDOM();
-    document
-      .querySelector(DOM.inputBtn)
-      .addEventListener("click", newInputController);
+    document.querySelector(DOM.inputBtn).addEventListener("click", addItem);
 
     document.addEventListener("keypress", function (event) {
       if (event.keyCode === 13 || event.which === 13) {
-        newInputController();
+        addItem();
       }
     });
+
+    document.querySelector(DOM.container).addEventListener("click", deleteItem);
   };
 
   let updateBudget = function () {
