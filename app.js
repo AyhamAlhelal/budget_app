@@ -29,7 +29,7 @@ let UIController = (function () {
       return DOM;
     },
 
-    addHTMLItems: function (type, obj) {
+    addHTMLItem: function (type, obj) {
       let html, newItem, parentItem;
       if (type === "inc") {
         html =
@@ -191,7 +191,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
       );
 
       // add the input value to the UI
-      UICtrl.addHTMLItems(inputs.inputType, addInput);
+      UICtrl.addHTMLItem(inputs.inputType, addInput);
 
       // clear the fields
       UICtrl.clearFields();
