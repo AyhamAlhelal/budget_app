@@ -20,6 +20,37 @@ let UIController = (function () {
     itemPercentage: ".item__percentage",
   };
 
+  let formatNum = function (num, type) {
+    let splitesNum, int, dec;
+
+    num = Math.abs(num);
+    num = num.toFixed(2);
+
+    let reversing = function (str) {
+      return str.split("").reverse().join("");
+    };
+    let formating = function (string) {
+      let str = reversing(string);
+      let numStr = "";
+      for (let i = 0; i < str.length; i = i + 3) {
+        if (i + 3 < str.length) {
+          numStr = numStr + str.substr(i, 3) + ",";
+        } else {
+          numStr = numStr + str.substr(i);
+        }
+      }
+      return reversing(numStr);
+    };
+
+    splitesNum = num.split(".");
+    int = splitesNum[0];
+    dec = splitesNum[1];
+
+    int = formating(int);
+
+    return (type === "inc" ? "+" : "-") + " " + int + "." + dec;
+  };
+
   return {
     // get the input UI fields' values
     getInputs: function () {
@@ -40,12 +71,12 @@ let UIController = (function () {
       let html, newItem, parentItem;
       if (type === "inc") {
         html =
-          '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">+ %value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 
         parentItem = DOM.incomeList;
       } else if (type === "exp") {
         html =
-          '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">- %value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
 
         parentItem = DOM.expensesList;
       }
@@ -53,7 +84,7 @@ let UIController = (function () {
       // insert the object values in the html element
       newItem = html.replace("%id%", obj.id);
       newItem = newItem.replace("%description%", obj.description);
-      newItem = newItem.replace("%value%", obj.value);
+      newItem = newItem.replace("%value%", formatNum(obj.value, type));
 
       // insert the item into the parent
       document
@@ -85,9 +116,19 @@ let UIController = (function () {
 
     // print the budget into the UI
     printUIBudget: function (obj) {
-      document.querySelector(DOM.budgetValue).textContent = obj.budget;
-      document.querySelector(DOM.incomeValue).textContent = obj.totalInc;
-      document.querySelector(DOM.expensesValue).textContent = obj.totalExp;
+      let type = obj.budget > 0 ? "inc" : "exp";
+      document.querySelector(DOM.budgetValue).textContent = formatNum(
+        obj.budget,
+        type
+      );
+      document.querySelector(DOM.incomeValue).textContent = formatNum(
+        obj.totalInc,
+        "inc"
+      );
+      document.querySelector(DOM.expensesValue).textContent = formatNum(
+        obj.totalExp,
+        "exp"
+      );
       if (obj.percentage > 0) {
         document.querySelector(DOM.percentageValue).textContent =
           obj.percentage + "%";
