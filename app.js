@@ -3,6 +3,7 @@
  UI Controller - Module Pattern
 --------------------------------*/
 let UIController = (function () {
+  // DOM classes
   let DOM = {
     inputValue: ".add__value",
     inputDescription: ".add__description",
@@ -16,9 +17,11 @@ let UIController = (function () {
     percentageValue: ".budget__expenses--percentage",
     monthTitle: ".budget__title--month",
     container: ".container",
+    itemPercentage: ".item__percentage",
   };
 
   return {
+    // get the input UI fields' values
     getInputs: function () {
       return {
         inputType: document.querySelector(DOM.inputType).value,
@@ -27,10 +30,12 @@ let UIController = (function () {
       };
     },
 
+    // get the DOM classes
     getDOM: function () {
       return DOM;
     },
 
+    // print item into the UI
     addUIItem: function (type, obj) {
       let html, newItem, parentItem;
       if (type === "inc") {
@@ -55,12 +60,16 @@ let UIController = (function () {
         .querySelector(parentItem)
         .insertAdjacentHTML("beforeend", newItem);
     },
+
+    // delete UI item
     deleteUIItem: function (id) {
       let item, parent;
       item = document.getElementById(id);
       parent = item.parentNode;
       parent.removeChild(item);
     },
+
+    // clear the input UI fields
     clearUIFields: function () {
       let fieldsList, fieldsAry;
       fieldsList = document.querySelectorAll(
@@ -73,17 +82,30 @@ let UIController = (function () {
       });
       fieldsAry[0].focus();
     },
+
+    // print the budget into the UI
     printUIBudget: function (obj) {
       document.querySelector(DOM.budgetValue).textContent = obj.budget;
       document.querySelector(DOM.incomeValue).textContent = obj.totalInc;
       document.querySelector(DOM.expensesValue).textContent = obj.totalExp;
-
       if (obj.percentage > 0) {
         document.querySelector(DOM.percentageValue).textContent =
           obj.percentage + "%";
       } else {
         document.querySelector(DOM.percentageValue).textContent = "-";
       }
+    },
+    // print the percentages into the UI
+    printUIpercentages: function (percentagesAry) {
+      let percentagesList = document.querySelectorAll(DOM.itemPercentage);
+      let percentages = Array.prototype.slice.call(percentagesList);
+      percentages.forEach((item, index) => {
+        if (percentagesAry[index] > 0) {
+          item.textContent = percentagesAry[index] + "%";
+        } else {
+          item.textContent = "-";
+        }
+      });
     },
   };
 })();
@@ -92,8 +114,6 @@ let UIController = (function () {
  Budget Controller - Module Pattern
 --------------------------------*/
 let BudgetController = (function () {
-  // code
-
   class Income {
     constructor(id, value, description) {
       this.id = id;
@@ -109,6 +129,8 @@ let BudgetController = (function () {
       this.description = description;
       this.percentage = -1;
     }
+
+    // calculate the percentage
     calcPercentage(totalIncome) {
       if (totalIncome > 0) {
         this.percentage = Math.round((this.value / totalIncome) * 100);
@@ -116,6 +138,8 @@ let BudgetController = (function () {
         this.percentage = -1;
       }
     }
+
+    // get the percentage
     get getPercentage() {
       return this.percentage;
     }
@@ -226,6 +250,7 @@ let BudgetController = (function () {
  App Controller - Module Pattern
 --------------------------------*/
 let appController = (function (UICtrl, BudgetCntrl) {
+  // add the item to the data structure and UI
   let addItemCtrl = function () {
     // get the input value
     let inputs = UICtrl.getInputs();
@@ -255,6 +280,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
     }
   };
 
+  // delete the item from the data structure and UI
   let deleteItemCtrl = function (event) {
     let item, splitedId, itemId, type, id;
 
@@ -280,6 +306,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
     }
   };
 
+  // add event listeners
   let addEventListeners = function () {
     let DOM = UICtrl.getDOM();
     document.querySelector(DOM.inputBtn).addEventListener("click", addItemCtrl);
@@ -295,6 +322,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
       .addEventListener("click", deleteItemCtrl);
   };
 
+  // update the budget into the data structure and the UI
   let updateBudget = function () {
     // calculate the budget
     BudgetCntrl.calculateBudget();
@@ -315,7 +343,8 @@ let appController = (function (UICtrl, BudgetCntrl) {
     percentages = BudgetCntrl.getPercentages();
 
     // display the percentages into the UI
-    console.log(percentages);
+    // console.log(percentages);
+    UICtrl.printUIpercentages(percentages);
   };
 
   return {
