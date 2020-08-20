@@ -4,7 +4,7 @@
 --------------------------------*/
 let UIController = (function () {
   // DOM classes
-  let DOM = {
+  const DOM = {
     inputValue: ".add__value",
     inputDescription: ".add__description",
     inputType: ".add__type",
@@ -23,9 +23,6 @@ let UIController = (function () {
   let formatNum = function (num, type) {
     let splitesNum, int, dec;
 
-    num = Math.abs(num);
-    num = num.toFixed(2);
-
     let reversing = function (str) {
       return str.split("").reverse().join("");
     };
@@ -41,6 +38,9 @@ let UIController = (function () {
       }
       return reversing(numStr);
     };
+
+    num = Math.abs(num);
+    num = num.toFixed(2);
 
     splitesNum = num.split(".");
     int = splitesNum[0];
@@ -147,6 +147,28 @@ let UIController = (function () {
           item.textContent = "-";
         }
       });
+    },
+    printDate: function () {
+      let date, month, year;
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      date = new Date();
+      month = date.getMonth();
+      year = date.getFullYear();
+      document.querySelector(DOM.monthTitle).textContent =
+        months[month] + " " + year;
     },
   };
 })();
@@ -390,6 +412,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
 
   return {
     init: function () {
+      UICtrl.printDate();
       updateBudget();
       addEventListeners();
     },
