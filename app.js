@@ -2,7 +2,7 @@
 /*--------------------------------
  UI Controller - Module Pattern
 --------------------------------*/
-let UIController = (function () {
+const UIController = (function () {
   // DOM classes
   const DOM = {
     inputValue: ".add__value",
@@ -20,13 +20,13 @@ let UIController = (function () {
     itemPercentage: ".item__percentage",
   };
 
-  let formatNum = function (num, type) {
+  const formatNum = function (num, type) {
     let splitesNum, int, dec;
 
-    let reversing = function (str) {
+    const reversing = function (str) {
       return str.split("").reverse().join("");
     };
-    let formating = function (string) {
+    const formating = function (string) {
       let str = reversing(string);
       let numStr = "";
       for (let i = 0; i < str.length; i = i + 3) {
@@ -148,6 +148,7 @@ let UIController = (function () {
         }
       });
     },
+    // print the month and the year into the UI
     printDate: function () {
       let date, month, year;
       const months = [
@@ -170,13 +171,28 @@ let UIController = (function () {
       document.querySelector(DOM.monthTitle).textContent =
         months[month] + " " + year;
     },
+    // toggle the input fields colors
+    changeType: function () {
+      let elements;
+      elements = document.querySelectorAll(
+        DOM.inputValue + "," + DOM.inputDescription + "," + DOM.inputType
+      );
+
+      elements = Array.prototype.slice.call(elements);
+
+      elements.forEach((item) => {
+        item.classList.toggle("red-focus");
+      });
+
+      document.querySelector(DOM.inputBtn).classList.toggle("red");
+    },
   };
 })();
 
 /*--------------------------------
  Budget Controller - Module Pattern
 --------------------------------*/
-let BudgetController = (function () {
+const BudgetController = (function () {
   class Income {
     constructor(id, value, description) {
       this.id = id;
@@ -208,7 +224,7 @@ let BudgetController = (function () {
     }
   }
 
-  let data = {
+  const data = {
     totalItems: {
       inc: [],
       exp: [],
@@ -222,19 +238,19 @@ let BudgetController = (function () {
   };
 
   // calculate total income or expenses
-  let calcTotal = function (type) {
+  const calcTotal = function (type) {
     data.totalBudget[type] = data.totalItems[type].reduce((sum, item) => {
       return sum + item.value;
     }, 0);
   };
 
   // calculate the final budget
-  let calcBudget = function () {
+  const calcBudget = function () {
     data.budget = data.totalBudget.inc - data.totalBudget.exp;
   };
 
   // calculate the percentage
-  let calcTotalPercentage = function () {
+  const calcTotalPercentage = function () {
     if (data.totalBudget.inc > 0) {
       data.percentage = Math.round(
         (data.totalBudget.exp / data.totalBudget.inc) * 100
@@ -312,9 +328,9 @@ let BudgetController = (function () {
 /*--------------------------------
  App Controller - Module Pattern
 --------------------------------*/
-let appController = (function (UICtrl, BudgetCntrl) {
+const appController = (function (UICtrl, BudgetCntrl) {
   // add the item to the data structure and UI
-  let addItemCtrl = function () {
+  const addItemCtrl = function () {
     // get the input value
     let inputs = UICtrl.getInputs();
     if (
@@ -344,7 +360,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
   };
 
   // delete the item from the data structure and UI
-  let deleteItemCtrl = function (event) {
+  const deleteItemCtrl = function (event) {
     let item, splitedId, itemId, type, id;
 
     // get the target item and the id
@@ -370,7 +386,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
   };
 
   // add event listeners
-  let addEventListeners = function () {
+  const addEventListeners = function () {
     let DOM = UICtrl.getDOM();
     document.querySelector(DOM.inputBtn).addEventListener("click", addItemCtrl);
 
@@ -383,10 +399,14 @@ let appController = (function (UICtrl, BudgetCntrl) {
     document
       .querySelector(DOM.container)
       .addEventListener("click", deleteItemCtrl);
+
+    document
+      .querySelector(DOM.inputType)
+      .addEventListener("change", UICtrl.changeType);
   };
 
   // update the budget into the data structure and the UI
-  let updateBudget = function () {
+  const updateBudget = function () {
     // calculate the budget
     BudgetCntrl.calculateBudget();
     // get the budget data
@@ -396,7 +416,7 @@ let appController = (function (UICtrl, BudgetCntrl) {
     UICtrl.printUIBudget(budget);
   };
 
-  let updatePercentages = function () {
+  const updatePercentages = function () {
     let percentages;
 
     // calculate all the expense percentages
