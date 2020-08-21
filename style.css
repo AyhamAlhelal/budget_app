@@ -8,24 +8,13 @@
   box-sizing: border-box;
 }
 
-.clearfix::after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
 body {
   color: #555;
   font-family: Open Sans;
   font-size: 16px;
-  position: relative;
-  height: 100vh;
   font-weight: 400;
 }
 
-.right {
-  float: right;
-}
 .red {
   color: #ff5049 !important;
 }
@@ -38,46 +27,51 @@ body {
   **********************************************/
 
 .top {
-  height: 40vh;
+  max-width: 100%;
+  height: 55vh;
   background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
     url(back.png);
   background-size: cover;
   background-position: center;
-  position: relative;
 }
 
 .budget {
-  position: absolute;
-  width: 350px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
   color: #fff;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .budget__title {
-  font-size: 18px;
+  font-size: 1.1rem;
   text-align: center;
-  margin-bottom: 10px;
+  padding: 0.8rem 0;
   font-weight: 300;
 }
 
 .budget__value {
   font-weight: 300;
-  font-size: 46px;
+  font-size: 2.8rem;
   text-align: center;
-  margin-bottom: 25px;
+  padding: 0.8rem 0;
   letter-spacing: 2px;
 }
 
 .budget__income,
 .budget__expenses {
+  width: 22rem;
   padding: 12px;
   text-transform: uppercase;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  grid-gap: 4px;
 }
 
 .budget__income {
-  margin-bottom: 10px;
+  margin-bottom: 0.8rem;
   background-color: #28b9b5;
 }
 
@@ -87,25 +81,33 @@ body {
 
 .budget__income--text,
 .budget__expenses--text {
-  float: left;
-  font-size: 13px;
+  grid-column: 1 / span 1;
+  font-size: 0.8rem;
   color: #444;
   margin-top: 2px;
+  text-align: left;
+}
+
+.budget__income--box,
+.budget__expenses--box {
+  grid-column: 2 / span 4;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
 }
 
 .budget__income--value,
 .budget__expenses--value {
   letter-spacing: 1px;
-  float: left;
 }
 
 .budget__income--percentage,
 .budget__expenses--percentage {
-  float: left;
   width: 34px;
-  font-size: 11px;
+  font-size: 0.7rem;
   padding: 3px 0;
-  margin-left: 10px;
+  margin-left: 0.6rem;
+  grid-column: 7 / 8;
 }
 
 .budget__expenses--percentage {
@@ -119,6 +121,9 @@ body {
   **********************************************/
 
 /***** FORM *****/
+.bottom {
+  max-width: 100%;
+}
 .add {
   padding: 14px;
   border-bottom: 1px solid #e7e7e7;
@@ -126,8 +131,10 @@ body {
 }
 
 .add__container {
-  margin: 0 auto;
   text-align: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
 }
 
 .add__type {
@@ -191,19 +198,22 @@ body {
 
 /***** LISTS *****/
 .container {
-  width: 1000px;
-  margin: 60px auto;
+  width: 100%;
+  height: 100%;
+  padding: 3.7rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  grid-gap: 4px;
 }
 
 .income {
-  float: left;
-  width: 475px;
+  grid-column: 1 / span 1;
   margin-right: 50px;
 }
 
 .expenses {
-  float: left;
-  width: 475px;
+  grid-column: 2 / span 1;
 }
 
 h2 {
@@ -220,9 +230,16 @@ h2 {
   color: #ff5049;
 }
 
+.income__list,
+.expenses__list {
+}
+
 .item {
   padding: 13px;
   border-bottom: 1px solid #e7e7e7;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
 }
 
 .item:first-child {
@@ -233,16 +250,19 @@ h2 {
 }
 
 .item__description {
-  float: left;
+}
+
+.item__box {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
 }
 
 .item__value {
-  float: left;
   transition: transform 0.3s;
 }
 
 .item__percentage {
-  float: left;
   margin-left: 20px;
   transition: transform 0.3s;
   font-size: 11px;
@@ -265,7 +285,6 @@ h2 {
 }
 
 .item__delete {
-  float: left;
 }
 
 .item__delete--btn {
@@ -307,4 +326,21 @@ h2 {
 }
 .unpaid:hover .item__description {
   font-weight: 900;
+}
+
+@media (max-width: 700px) {
+  .container {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+  .income {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+    margin-bottom: 3rem;
+  }
+  .expenses {
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
+    margin-bottom: 3rem;
+  }
 }
